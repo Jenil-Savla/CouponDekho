@@ -9,6 +9,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Navigate } from "react-router-dom";
+import signup from './images/signup.jpg';
 
 
 const validEmail = new RegExp(
@@ -18,9 +19,10 @@ const validPassword = new RegExp('^.*(?=.{8,}).*$');
 
 
 const Signup = () => {
-  const paperStyle = {  margin: 'auto',marginTop: 30, border: 1, width: '40%', height: 550, paddingTop: 10 };
+  const paperStyle = { marginTop: 60, border: 1, height: 550, paddingTop: 10, marginLeft: 10, marginRight: 50 };
   const gridStyle = { paddingLeft: 10, paddingRight: 10, paddingTop: 2.5  }
   const avatarStyle={backgroundColor: '#0eb3ae', marginBottom: 0}
+  const signupStyle = {width: '100%', height: '100%', objectFit: 'cover', marginTop: 30}
   
 
   const [email, setEmail] = useState('');
@@ -76,7 +78,11 @@ const [isLoggedIn, setLogin] = useState("");
   
 
   return (
-        <Box>
+        <Box style={{display: 'flex'}}>
+            <Box style={{flex: 50}}>
+              <img  src={signup} style={signupStyle}/>
+            </Box>
+            <Box style={{flex: 35}}>
             <Paper elavation={3} style={paperStyle}>
             <Grid align='center'>
             <Avatar style={avatarStyle}><LockOutlinedIcon/></Avatar>
@@ -158,6 +164,8 @@ const [isLoggedIn, setLogin] = useState("");
                 <Button variant='contained' sx={{width: '250px', height: 50, borderRadius: 10, marginLeft: 15 }} fullWidth onClick={handleSubmit}>Signup</Button>
               </Grid>
             </Paper>
+        </Box>
+        
         </Box>
   )
 }

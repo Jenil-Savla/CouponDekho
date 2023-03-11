@@ -9,6 +9,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from 'react-router-dom'
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import login from './images/login.jpg';
 
 const validEmail = new RegExp(
   '^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'
@@ -16,10 +17,11 @@ const validEmail = new RegExp(
 const validPassword = new RegExp('^.*(?=.{8,}).*$');
 
 
-const Signup = () => {
-  const paperStyle = {  margin: 'auto',marginTop: 30, border: 1, width: '40%', height: 450, paddingTop: 10 };
+const Login = () => {
+  const paperStyle = { marginTop: 60, border: 1, height: 550, paddingTop: 10, marginLeft: 10, marginRight: 50 };
   const gridStyle = { paddingLeft: 10, paddingRight: 10, paddingTop: 2.5  }
-  const avatarStyle={backgroundColor: '#0eb3ae', marginBottom: 0 , marginTop: 10}
+  const avatarStyle={backgroundColor: '#0eb3ae', marginBottom: 0}
+  const loginStyle = {width: '100%', height: '100%', objectFit: 'cover', marginTop: 30}
   
   const url = 'http://127.0.0.1:8000/api/login/'
   const [email, setEmail] = useState('');
@@ -73,7 +75,8 @@ const navigate = useNavigate();
   }
 
   return (
-        <Box sx= {{ backgroundImage :' url(https://www.wallpapers13.com/wp-content/uploads/2015/12/Nature-Lake-Bled.-Desktop-background-image.jpg)'}}>
+    <Box style={{display: 'flex'}}>
+        <Box style={{flex: 50}}>
             <Paper elavation={3} style={paperStyle}>
             <Grid align='center'>
                 <Avatar style={avatarStyle}><LoginIcon/></Avatar>
@@ -123,8 +126,12 @@ const navigate = useNavigate();
                 <Typography sx = {{padding : 2}}>Don't have an account?<Button onClick={() => navigate('/signup')}>Sign Up</Button></Typography>
               </Grid>
             </Paper>
+            <Box style={{flex: 50}}>
+              <img  src={login} style={loginStyle}/>
+            </Box>
+        </Box>
         </Box>
   )
 }
 
-export default Signup;
+export default Login;
