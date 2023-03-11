@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import coupon from './images/coupon.png';
 import Form from 'react-bootstrap/Form';
+import SearchIcon from '@mui/icons-material/Search';
 
 // import { useDispatch } from 'react-redux';
 
@@ -29,22 +30,18 @@ const Navbar = () => {
   }
 
   
-
-  const handleClick = () => {
-
-  }
-  
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{backgroundColor: 'white'}}>
         <Toolbar>
                 <img src={coupon} style={logoStyle} />
             <div>
-                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24 }}>
-                COUPONDEKHO
+                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 30 }}>
+                  COUPONDEKHO
                 </Typography>
             </div>
           
+            <SearchIcon color="primary"/>
             <Form className="d-flex">
             <Form.Control
               type="search"
