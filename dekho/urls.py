@@ -11,4 +11,5 @@ urlpatterns = [
     path('product/<int:pk>/', views.ProductDetailAPI.as_view(), name="ProductDetail"),
     path('order/', views.OrderAPI.as_view(), name="Order"),
     path('orderitem/', views.OrderItemAPI.as_view(), name="OrderItem"),
+    path('sku_list',views.sku_list,name="sku_list"),
 ]

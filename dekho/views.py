@@ -3,6 +3,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework import status,permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from django.contrib.auth import authenticate
 
@@ -263,3 +264,12 @@ class OrderAPI(GenericAPIView):
 			return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+@api_view(['GET'])
+def sku_list(request):
+	try:
+		skus = Product.objects.filter(company = request.user)
+		serializer = ProductSerializer(skus, many = True)
+		return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
+	except Exception as e:
+		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
