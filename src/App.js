@@ -6,12 +6,14 @@ import { Route, Routes } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home';
 import Generate from './components/Generate';
+import MyPieChart from './components/Piechart';
 
 const App = () => {
   return (
     <>
       <Navbar />
-      <Generate />
+      {/* <Generate /> */}
+      <MyPieChart />
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/signup' element={<Signup/>} />
