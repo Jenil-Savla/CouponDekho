@@ -1,124 +1,141 @@
-import React, { useState } from 'react';
-import { Grid, Paper, Avatar, Box, TextField, Button, Typography, Popover } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import EmailIcon from '@mui/icons-material/Email';
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import KeyIcon from '@mui/icons-material/Key';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react'
+import { Box, Grid, TextField, Typography, Button, Paper, Avatar } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Modal from '@mui/material/Modal';
 
 
-// const initialState = { username: '', email: '', password: '', confirmPassword: ''};
 const validEmail = new RegExp(
   '^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$'
 );
-const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$');
+const validPassword = new RegExp('^.*(?=.{8,}).*$');
 
-const Register = () => {
-    const paperStyle = { padding: 30, height: '70vh', width: 300, margin: ' 100px auto' }
-    const avatarStyle={backgroundColor: '#0eb3ae'}
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-    // const id = open ? 'simple-popover' : undefined;
-    const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [emailErr, setEmailErr] = useState(false);
-    const [pwdError, setPwdError] = useState(false);
-    const [conpwdError, setConpwdError] = useState(false);
-    
-    const handleSignup = () => {
-      !validEmail.test(email) ? setEmailErr(true) : setEmailErr(false);
 
-      !validPassword.test(password)? setPwdError(true) : setPwdError(false);
+const Signup = () => {
+  const paperStyle = {  margin: 'auto',marginTop: 30, border: 1, width: '40%', height: 600, paddingTop: 10 };
+  const gridStyle = { paddingLeft: 10, paddingRight: 10, paddingTop: 0.7 }
+  const avatarStyle={backgroundColor: '#0eb3ae', marginBottom: 0}
+  
 
-      password != confirmPassword ? setConpwdError(true) : setConpwdError(false);
+  const [email, setEmail] = useState('');
+  const [emailErr, setEmailErr] = useState(false);
+  const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [pwdError, setPwdError] = useState(false);
+  const [showPwd, setShowPwd] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [conpwdError, setConpwdError] = useState(false);
+//   const [showPwd, setShowPwd] = useState(false);
+  
 
+  const handleClickShowPassword = () => setShowPwd((show) => !show);
+
+  const handleSubmit = () => {
+    !validEmail.test(email) ? setEmailErr(true) : setEmailErr(false);
+
+    !validPassword.test(password)? setPwdError(true) : setPwdError(false);
+
+    password != confirmPassword ? setConpwdError(true) : setConpwdError(false);
+
+    if(name==='' || email==='' || password==='' || confirmPassword==='') {
+        return (
+            alert("Please enter all the text fields")
+        )
     }
 
+  }
+
   return (
-    <Grid>
-        <Paper elevation={10} style={paperStyle}>
-          <Grid align='center'>
+        <Box>
+            <Paper elavation={3} style={paperStyle}>
+            <Grid align='center'>
             <Avatar style={avatarStyle}><LockOutlinedIcon/></Avatar>
             <h2>Sign Up</h2>
           </Grid>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-            <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-            <TextField id="input-with-sx" label="Username" variant="standard" fullWidth required onChange={(e) => setUsername(e.target.value)}/>
-          </Box>
+                <Grid sx={gridStyle}>
+                    <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Name</Typography>
+                    <TextField placeholder="Enter your name" variant="outlined" type='name' fullWidth value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                            <PersonOutlineIcon color="disabled"/>
+                        </InputAdornment>
+                    ),
+                    sx: { borderRadius: 10, color: 'region', backgroundColor: 'white'},}} />
+                </Grid>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-            <EmailIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-            <TextField id="input-with-sx" label="Email" variant="standard" fullWidth required 
-            onChange={(e) => setEmail(e.target.value)}
-            error={emailErr}
-            helperText= {
-              emailErr? "Invalid Email" : ''
-            }/>
-            
-          </Box>
+              <Grid sx={gridStyle}>
+                <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Email</Typography>
+                <TextField placeholder="Enter your email" variant="outlined"  type='email' fullWidth value={email}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                        <MailOutlineIcon color="disabled"/>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 10, color: "#000", backgroundColor: 'white'},}} 
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={emailErr}/>
+                  {emailErr && <Typography variant='body' sx={{marginLeft: 4, color: '#AF0D0D'}}>Invalid email</Typography>}
+              </Grid>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-end' }} onMouseEnter={(e) => setAnchorEl(e.currentTarget)}
-            onMouseLeave={() => setAnchorEl(null)}>
-            <KeyIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-            <TextField id="input-with-sx" label="Password" variant="standard" fullWidth required onChange={(e) => setPassword(e.target.value)}
-            // aria-owns={open ? 'mouse-over-popover' : undefined}
-            // aria-haspopup="true"
-            error={pwdError}
-            helperText= {
-              pwdError? "Invalid Password" : ''
-            }/>
-            
-            <Popover
-              id="mouse-over-popover"
-              sx={{
-                pointerEvents: 'none',
-              }}
-              open={open}
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              disableRestoreFocus
-            >
-            <Typography sx={{ p: 1 }}>Should contain atleast one Uppercase <br></br> and Lowercase character, number, <br></br> special character(Eg. @,#,$,etc)</Typography>
-          </Popover>
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-            <KeyIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-            <TextField id="input-with-sx" label="Confirm Password" variant="standard" fullWidth required 
-              onChange={(e) => setConfirmPassword(e.target.value)} 
-              error={conpwdError}
-              helperText= {
-                conpwdError? "Password does not match!" : ''
-              }/>
-          </Box>
-
-          <FormGroup>
-            <FormControlLabel control={<Checkbox />} label="I agree to terms and conditions" />
-          </FormGroup>
-
-          <Box sx={{ display: 'flex', alignItems: 'flex-end', margin: 2}}>
-            <Button variant='contained' color='success' fullWidth onClick={handleSignup}>Sign Up</Button>
-          </Box>
-          
-          <Typography>Already have an account?<Button onClick={() => navigate('/')}>Sign In</Button></Typography>
-        </Paper>
-    </Grid>
+              <Grid sx={gridStyle}>
+                <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Password</Typography>
+                <TextField placeholder="Create password" variant="outlined" fullWidth value={password}
+                onChange={(e) => setPassword(e.target.value)} type={showPwd ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  // onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPwd ? <VisibilityOff color='disabled' /> : <Visibility color='disabled' />}
+                </IconButton>
+                        
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 10, color: "#000", backgroundColor: 'white'},}}  error={pwdError}/>
+                  { pwdError && <Typography variant='body2' sx={{marginLeft: 5, color: '#AF0D0D'}}>*The password must be minimum 8 characters</Typography>}
+              </Grid>
+              
+              <Grid sx={gridStyle}>
+                <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Confirm Password</Typography>
+                <TextField placeholder="Create password" variant="outlined" fullWidth value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)} type={showPwd ? 'text' : 'password'}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  // onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                >
+                  {showPwd ? <VisibilityOff color='disabled' /> : <Visibility color='disabled' />}
+                </IconButton>
+                        
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 10, color: "#000", backgroundColor: 'white'},}}  error={conpwdError}/>
+                  { conpwdError && <Typography variant='body2' sx={{marginLeft: 5, color: '#AF0D0D'}}>*The password does not match</Typography>}
+              </Grid>
+              <Grid sx={gridStyle}>
+                <Button variant='contained' sx={{width: '250px', height: 50, borderRadius: 10, marginLeft: 15 }} fullWidth onClick={handleSubmit}>Signup</Button>
+              </Grid>
+            </Paper>
+        </Box>
   )
 }
 
-export default Register;
+export default Signup;
