@@ -72,16 +72,10 @@ class Coupon(models.Model):
     redemption_limit = models.IntegerField(default=1)
     used = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE , blank=True, null=True)
     def __str__(self):
         return self.code
     
-class CouponProduct(models.Model):
-    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
-    product = models.ForeignKey('Product', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.coupon.code
 
 class Redemption(models.Model):
     coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
@@ -102,3 +96,10 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+class CouponProduct(models.Model):
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.coupon.code
