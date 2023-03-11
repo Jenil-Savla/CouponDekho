@@ -233,7 +233,7 @@ const Generate = () => {
     return (
         <div className="main">
         <Container component={Box} p={4}>
-            <Paper component={Box} p={3} style={{marginTop: 110, width: 700, marginLeft: 500}}>
+            <Paper component={Box} p={3} style={{marginTop: 90, width: 600, marginLeft: 600}}>
                 <div>
                     <Stepper style={step} activeStep={activeStep} sx={{marginBottom: 5, color: 'green'}}>
                         {
