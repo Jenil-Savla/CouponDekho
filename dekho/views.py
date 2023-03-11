@@ -134,3 +134,56 @@ class ProductAPI(GenericAPIView):
 			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+
+class OrderItemAPI(GenericAPIView):
+	permission_classes = [permissions.IsAuthenticated]
+	
+	def get(self,request):
+		try:
+			orders = Order.objects.filter(user = request.user)
+			serializer = OrderSerializer(orders, many = True)
+			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+	def post(self,request):
+		try:
+			data = request.data
+			cart,_ = Order.objects.get_or_create(user = request.user, payment_status = False)
+			serializer = OrderItemSerializer(data=data)
+			if serializer.is_valid(raise_exception = True):
+				orderitem = serializer.save(order = cart)
+				cart.total_amount += (orderitem.price * orderitem.quantity)
+				cart.save()
+				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
+			return Response({"status" : False ,"data" : serializer.errors, "message" : "Failure"}, status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+	def delete(self,request):
+		try:
+			data = request.data
+			cart,_ = Order.objects.get_or_create(user = request.user, payment_status = False)
+			orderitem = OrderItem.objects.get(order = cart, product = data["product"])
+			cart.total_amount -= (orderitem.price * orderitem.quantity)
+			cart.save()
+			orderitem.delete()
+			return Response({"status" : True ,"data" : {}, "message" : 'Success'},status = status.HTTP_200_OK)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+class OrderAPI(GenericAPIView):
+	permission_classes = [permissions.IsAuthenticated]
+	
+	def get(self,request):
+		try:
+			orders = Order.objects.filter(user = request.user, payment_status = False)
+			serializer = OrderSerializer(orders, many = True)
+			data = {}
+			data["details"] = serializer.data
+			orderitems = OrderItem.objects.filter(order = data["id"])
+			oi_serializer = OrderItemSerializer(orderitems, many = True)
+			data["products"] = oi_serializer.data
+			return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
