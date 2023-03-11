@@ -134,13 +134,8 @@ const [isLoggedIn, setLogin] = useState("");
               </Grid>
               
               <Grid sx={gridStyle}>
-<<<<<<< HEAD
                 <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Confirm Password</Typography>
                 <TextField placeholder="Confirm password" variant="outlined" fullWidth value={confirmPassword}
-=======
-                {/* <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Confirm Password</Typography> */}
-                <TextField placeholder="Create password" variant="outlined" fullWidth value={confirmPassword}
->>>>>>> cf0e3b089426d4db7f5d5b10a2781b69106c23a8
                 onChange={(e) => setConfirmPassword(e.target.value)} type={showPwd ? 'text' : 'password'}
                 InputProps={{
                   endAdornment: (

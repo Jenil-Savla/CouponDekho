@@ -1,4 +1,4 @@
-import { Box, Container, Paper, TextareaAutosize, TextField } from '@mui/material'
+import { Box, Card, Container, Paper, TextareaAutosize, TextField } from '@mui/material'
 import React, {useState} from 'react'
 import {Typography,Stepper, Step, Input, StepLabel, InputLabel, Button, FormControlLabel, MenuItem, Select, Radio, RadioGroup, FormControl} from '@mui/material';
 // import Dropdown from 'react-dropdown';
@@ -7,6 +7,30 @@ import {Typography,Stepper, Step, Input, StepLabel, InputLabel, Button, FormCont
 // import {useNavigate} from 'react-router-dom';
 // import { createPost } from '../../actions/posts';
 // import FileBase from 'react-file-base64';
+// import {makeStyles} from '@mui/styles';
+// import generate from './images/generate.png';
+import './style.css';
+
+
+// const useStyles = makeStyles(() => ({
+//     root: {
+//       "& .MuiStepIcon-active": { color: "red" },
+//       "& .MuiStepIcon-completed": { color: "green" },
+//       "& .Mui-disabled .MuiStepIcon-root": { color: "cyan" }
+//     }
+//   }));
+
+// const c = useStyles();
+
+// const bg = {
+//     background-img 
+// }
+
+const step = {
+    "& .MuiStepIcon-active": { color: "red" },
+    "& .MuiStepIcon-completed": { color: "green" },
+    "& .Mui-disabled .MuiStepIcon-root": { color: "cyan" }
+}
 
 function getSteps(){
     return[
@@ -25,6 +49,7 @@ const Generate = () => {
         maxdiscount: '',
         format: '',
         applicableTo: '',
+        date: ''
     });
 
     const [sku, setsku] = useState([{skuAmt: ""}]);
@@ -53,7 +78,11 @@ const Generate = () => {
             !validDiscount.test(postData.discountAmt) ? seterror(true) : seterror(false);
         }
 
-    } 
+    }   
+
+    if(postData.discountAmt>100){
+        alert("Percentage cannot be more than 100!")
+    }
 
     const handleBack = () =>{
         setActiveStep(activeStep-1);
@@ -97,7 +126,7 @@ const Generate = () => {
                             fullWidth
                             margin='dense'
                             name="title"
-                            error={error}
+                            // error={error}
                             value = {postData.discountAmt}
                             onChange= {(e) => setPostData({ ...postData, discountAmt : e.target.value})}
                             />
@@ -136,6 +165,15 @@ const Generate = () => {
             case 1:
                 return(
                     <>
+                    <TextField
+                    variant="outlined"
+                    fullWidth
+                    margin='dense'
+                    name="date"
+                    type="date"
+                    value = {postData.date}
+                    onChange= {(e) => setPostData({ ...postData, date : e.target.value})}
+                    />
                     <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Format</InputLabel>
                     <Select
@@ -191,11 +229,13 @@ const Generate = () => {
         }
     }
     // console.log(postData);
+    
     return (
+        <div className="main">
         <Container component={Box} p={4}>
-            <Paper component={Box} p={3}>
+            <Paper component={Box} p={3} style={{marginTop: 110, width: 700, marginLeft: 500}}>
                 <div>
-                    <Stepper activeStep={activeStep} sx={{marginBottom: 5}}>
+                    <Stepper style={step} activeStep={activeStep} sx={{marginBottom: 5, color: 'green'}}>
                         {
                             steps.map((step, index) =>{
                                 return(
@@ -208,12 +248,15 @@ const Generate = () => {
                     </Stepper>
                     {
                         activeStep===3 ? (
-                            <Typography variant='h3' align='center'>Thank You</Typography>
+                            <Container>
+                                <Typography variant='h3' >Successful Generation</Typography>
+                                <Typography variant='h5' >Your coupon code is: {postData.code}</Typography>
+                            </Container>
                         ): (
                             <>
                             <form> {getStepContent(activeStep)} </form>
                             <Button variant="contained" disabled={activeStep===0} onClick={handleBack} sx={{marginTop: 3}}>Back</Button>
-                            <Button variant="contained" onClick={handleNext} sx={{marginTop: 3, marginLeft: 120}} >{activeStep===2 ? 'Finish' : 'Next'}</Button>
+                            <Button variant="contained" onClick={handleNext} sx={{marginTop: 3, marginLeft: 3}} >{activeStep===2 ? 'Finish' : 'Next'}</Button>
                             
                             </>
                         )
@@ -221,6 +264,7 @@ const Generate = () => {
                 </div>
             </Paper>
         </Container>
+        </div>
     )
 }
 
