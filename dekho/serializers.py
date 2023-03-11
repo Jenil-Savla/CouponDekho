@@ -37,3 +37,13 @@ class RedeemSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Redemption
 		fields = '__all__'
+
+class ProductSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Product
+		fields = '__all__'
+
+class CouponProductSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = CouponProduct
+		fields = '__all__'

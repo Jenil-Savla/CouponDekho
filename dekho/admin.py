@@ -5,3 +5,5 @@ from .models import *
 admin.site.register(User)
 admin.site.register(Coupon)
 admin.site.register(Redemption)
+admin.site.register(Product)
+admin.site.register(CouponProduct)
