@@ -73,14 +73,12 @@ const navigate = useNavigate();
   }
 
   return (
-        <Box>
+        <Box sx= {{ backgroundImage :' url(https://www.wallpapers13.com/wp-content/uploads/2015/12/Nature-Lake-Bled.-Desktop-background-image.jpg)'}}>
             <Paper elavation={3} style={paperStyle}>
             <Grid align='center'>
                 <Avatar style={avatarStyle}><LoginIcon/></Avatar>
                 <h2>Log In</h2>
-          </Grid>
-
-                
+          </Grid>              
 
               <Grid sx={gridStyle}>
                 {/* <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Email</Typography> */}
