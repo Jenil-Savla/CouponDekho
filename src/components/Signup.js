@@ -3,12 +3,12 @@ import { Box, Grid, TextField, Typography, Button, Paper, Avatar } from '@mui/ma
 import InputAdornment from '@mui/material/InputAdornment';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import LocalPhoneOutlinedIcon from '@mui/icons-material/LocalPhoneOutlined';
+import axios from "axios";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Modal from '@mui/material/Modal';
+import { Navigate } from "react-router-dom";
 
 
 const validEmail = new RegExp(
@@ -18,8 +18,8 @@ const validPassword = new RegExp('^.*(?=.{8,}).*$');
 
 
 const Signup = () => {
-  const paperStyle = {  margin: 'auto',marginTop: 30, border: 1, width: '40%', height: 600, paddingTop: 10 };
-  const gridStyle = { paddingLeft: 10, paddingRight: 10, paddingTop: 0.7 }
+  const paperStyle = {  margin: 'auto',marginTop: 30, border: 1, width: '40%', height: 550, paddingTop: 10 };
+  const gridStyle = { paddingLeft: 10, paddingRight: 10, paddingTop: 2.5  }
   const avatarStyle={backgroundColor: '#0eb3ae', marginBottom: 0}
   
 
@@ -32,24 +32,48 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [conpwdError, setConpwdError] = useState(false);
 //   const [showPwd, setShowPwd] = useState(false);
-  
 
+const [isLoggedIn, setLogin] = useState("");
+
+  let url = "http://127.0.0.1:8000/api/register/";
   const handleClickShowPassword = () => setShowPwd((show) => !show);
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     !validEmail.test(email) ? setEmailErr(true) : setEmailErr(false);
 
     !validPassword.test(password)? setPwdError(true) : setPwdError(false);
 
-    password != confirmPassword ? setConpwdError(true) : setConpwdError(false);
+    password !== confirmPassword ? setConpwdError(true) : setConpwdError(false);
 
-    if(name==='' || email==='' || password==='' || confirmPassword==='') {
+    if(name==='' || email==='' || password==='' || confirmPassword==='' || pwdError || conpwdError || emailErr) {
         return (
-            alert("Please enter all the text fields")
+            alert("Please check all the text fields")
         )
     }
+    else{
+      const data = {
+        name: name,
+        password: password,
+        password2: password,
+        email: email,
+      };
+      await axios
+        .post(url, data)
+        .then((res) => {
+          localStorage.setItem('token', res.data.data.token);
+          setLogin(true);
+        })
+        .catch((err) => {
+          alert(JSON.parse(err.request.response).message);
+        });
+    };
 
-  }
+    }
+    if (isLoggedIn) {
+      return <Navigate to="/" />;
+    }
+
+  
 
   return (
         <Box>
@@ -60,7 +84,7 @@ const Signup = () => {
           </Grid>
 
                 <Grid sx={gridStyle}>
-                    <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Name</Typography>
+                    {/* <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Name</Typography> */}
                     <TextField placeholder="Enter your name" variant="outlined" type='name' fullWidth value={name}
                     onChange={(e) => setName(e.target.value)}
                     InputProps={{
@@ -73,7 +97,7 @@ const Signup = () => {
                 </Grid>
 
               <Grid sx={gridStyle}>
-                <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Email</Typography>
+                {/* <Typography sx={{marginLeft: 2, fontSize: 'large' }}>Email</Typography> */}
                 <TextField placeholder="Enter your email" variant="outlined"  type='email' fullWidth value={email}
                 InputProps={{
                   startAdornment: (
@@ -88,7 +112,7 @@ const Signup = () => {
               </Grid>
 
               <Grid sx={gridStyle}>
-                <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Password</Typography>
+                {/* <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Password</Typography> */}
                 <TextField placeholder="Create password" variant="outlined" fullWidth value={password}
                 onChange={(e) => setPassword(e.target.value)} type={showPwd ? 'text' : 'password'}
                 InputProps={{
@@ -99,7 +123,7 @@ const Signup = () => {
                   onClick={handleClickShowPassword}
                   // onMouseDown={handleMouseDownPassword}
                   edge="end"
-                >
+                > 
                   {showPwd ? <VisibilityOff color='disabled' /> : <Visibility color='disabled' />}
                 </IconButton>
                         
@@ -110,7 +134,7 @@ const Signup = () => {
               </Grid>
               
               <Grid sx={gridStyle}>
-                <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Confirm Password</Typography>
+                {/* <Typography sx={{marginLeft: 2, fontSize: 'large'}}>Confirm Password</Typography> */}
                 <TextField placeholder="Create password" variant="outlined" fullWidth value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)} type={showPwd ? 'text' : 'password'}
                 InputProps={{
