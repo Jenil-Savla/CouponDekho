@@ -3,6 +3,7 @@ import "./css/card.css";
 function Card() {
   return (
     <>
+    
       <div class="card">
         <svg
           viewBox="0 0 784.37 1277.39"

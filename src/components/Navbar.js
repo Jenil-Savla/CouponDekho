@@ -36,12 +36,16 @@ const Navbar = () => {
         <Toolbar>
                 <img src={coupon} style={logoStyle} />
             <div>
-                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 30 }}>
+                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 30, marginRight: 80 }}>
                   COUPONDEKHO
                 </Typography>
             </div>
+
+          <Button onClick={() => navigate('/')}>Home</Button>
+          <Button onClick={() => navigate('/generate')}>Generate Coupon</Button>
+          <Button onClick={handleLogin} >Login</Button>
           
-            <SearchIcon color="primary"/>
+            {/* <SearchIcon color="primary"/> */}
             <Form className="d-flex">
             <Form.Control
               type="search"
@@ -50,12 +54,8 @@ const Navbar = () => {
               aria-label="Search"
               onChange={(e) => setSearch(e.target.value)}
             />
-            <Button color="inherit" onClick={handleSearch}>Search</Button>
+            <Button color="primary" onClick={handleSearch} variant='contained'>Search</Button>
           </Form>
-
-          <Button onClick={() => navigate('/')}>Home</Button>
-          <Button onClick={() => navigate('/generate')}>Generate Coupon</Button>
-          <Button onClick={handleLogin} >Login</Button>
         </Toolbar>
       </AppBar>
     </Box>

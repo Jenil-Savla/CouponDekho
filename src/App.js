@@ -15,10 +15,6 @@ const App = () => {
   return (
     <>
       <Navbar />
-      {/* <Generate /> */}
-      {/* <MyPieChart /> */}
-      {/* <Card /> */}
-      {/* <Ecommerce /> */}
       <Routes>
         <Route path='/cards' element={<Ecommerce />}/>
         <Route path='/' element={<Home/>}/>
