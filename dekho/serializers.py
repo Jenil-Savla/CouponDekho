@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import *
 
 import re
 email_pattern = re.compile(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)")
@@ -27,3 +27,13 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email','password']
+	
+class CouponSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Coupon
+		fields = '__all__'
+
+class RedeemSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Redemption
+		fields = '__all__'
