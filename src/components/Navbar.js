@@ -6,13 +6,14 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import coupon from './images/coupon.png';
+import Form from 'react-bootstrap/Form';
 
 // import { useDispatch } from 'react-redux';
 
 const Navbar = () => {
     const logoStyle = { height: 35, width: 40 }
   const navigate = useNavigate();
-//   const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('');
 //   const dispatch = useDispatch();
 
   const handleLogin = () => {
@@ -44,9 +45,19 @@ const Navbar = () => {
                 </Typography>
             </div>
           
-          
-          <Button sx={{color: '#000'}}>Home</Button>
-          <Button>Generate Coupon</Button>
+            <Form className="d-flex">
+            <Form.Control
+              type="search"
+              placeholder="Search"
+              className="me-2"
+              aria-label="Search"
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <Button color="inherit" onClick={handleSearch}>Search</Button>
+          </Form>
+
+          <Button onClick={() => navigate('/')}>Home</Button>
+          <Button onClick={() => navigate('/generate')}>Generate Coupon</Button>
           <Button onClick={handleLogin} >Login</Button>
         </Toolbar>
       </AppBar>
