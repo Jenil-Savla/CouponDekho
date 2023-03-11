@@ -70,6 +70,7 @@ class Coupon(models.Model):
     discount_value = models.DecimalField(max_digits=12, decimal_places=2)
     max_discount_amount = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     redemption_limit = models.IntegerField(default=1)
+    expiry_date = models.DateTimeField(blank=True, null=True)
     used = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE , blank=True, null=True)
