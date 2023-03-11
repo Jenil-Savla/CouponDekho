@@ -74,6 +74,7 @@ class Coupon(models.Model):
     used = models.IntegerField(default=0)
     active = models.BooleanField(default=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE , blank=True, null=True)
+    
     def __str__(self):
         return self.code
     

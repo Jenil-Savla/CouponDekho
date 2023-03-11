@@ -10,9 +10,10 @@ from django.contrib.auth import authenticate
 from .models import *
 from .serializers import *
 
-import csv
-import os
 import random
+from .rules import CartRule, CouponRule
+
+from python_simple_rules_engine import run
 
 def generate_code(format, length):
     coupon_code = ''
@@ -271,5 +272,19 @@ def sku_list(request):
 		skus = Product.objects.filter(company = request.user)
 		serializer = ProductSerializer(skus, many = True)
 		return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
+	except Exception as e:
+		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+	
+@api_view(['POST'])
+def validate_coupon(request):
+	try:
+		data = request.data
+		skus = Product.objects.filter(sku__in = request.data["skus"]).values_list('sku', flat=True)
+		coupon = Coupon.objects.get(code = data["coupon"])
+		rules = [CouponRule(coupon.redemption_limit, coupon.expiry_date, coupon.active, coupon.used), CartRule(list(skus))]
+		pc = CouponProduct.objects.filter(coupon = coupon).values_list('product', flat=True)
+		subject = {"skus":list(Product.objects.filter(id__in = list(pc)).values_list('sku', flat=True))}
+		evaluation = run(subject, rules)
+		return Response({"status" : True ,"data" : {"valid":evaluation.result}, "message" : 'Success'},status = status.HTTP_200_OK)
 	except Exception as e:
 		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
