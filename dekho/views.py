@@ -1,3 +1,4 @@
+import string
 from rest_framework.generics import GenericAPIView
 from rest_framework import status,permissions
 from rest_framework.authtoken.models import Token
@@ -9,6 +10,31 @@ from .models import *
 from .serializers import *
 
 import csv
+import os
+import random
+
+def generate_code(format, length):
+    coupon_code = ''
+    if format == 'numeric':
+        while True:
+            coupon_code = ''.join(random.choices(string.digits, k=length))
+            checkk = Coupon.objects.filter(code=coupon_code).exists()
+            if checkk == False:
+                break
+    elif format == 'alphabetic':
+        while True:
+            coupon_code = ''.join(random.choices(string.ascii_uppercase, k=length))
+            checkk = Coupon.objects.filter(code=coupon_code).exists()
+            if checkk == False:
+                break
+
+    elif format == 'alphanumeric':
+        while True:
+            coupon_code = ''.join(random.choices(string.ascii_uppercase + string.digits, k=length))
+            checkk = Coupon.objects.filter(code=coupon_code).exists()
+            if checkk == False:
+                break
+    return coupon_code
 
 class RegisterAPI(GenericAPIView):
 	
@@ -64,10 +90,18 @@ class CouponListAPI(GenericAPIView):
 		try:
 			data = request.data
 			#Generate Coupon Code
-			data["code"] = 152369
+			data["code"] = generate_code(data["format"],12)
 			serializer = CouponSerializer(data=data)
 			if serializer.is_valid(raise_exception = True):
 				coupon = serializer.save(user = request.user)
+				if data["applicable_to"] == "specific_sku":
+					data["applicable_sku"] = data["applicable_sku"].split(",")
+					products = Product.objects.filter(sku__in = data["applicable_sku"])
+					for product in products:
+						print(product)
+						cp = CouponProductSerializer(data = {"coupon" : coupon.id,"product" : product.id})
+						if cp.is_valid(raise_exception = True):
+							cp.save()
 				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
 			return Response({"status" : False ,"data" : serializer.errors, "message" : "Failure"}, status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
@@ -117,7 +151,7 @@ class ProductAPI(GenericAPIView):
 	
 	def get(self,request):
 		try:
-			products = Product.objects.filter(company = request.user)
+			products = Product.objects.all()
 			serializer = ProductSerializer(products, many = True)
 			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
 		except Exception as e:
@@ -126,14 +160,54 @@ class ProductAPI(GenericAPIView):
 	def post(self, request):
 		try:
 			file = request.data["product_list"]
-			with open('films/pixar.csv') as file:
-				reader = csv.reader(file)
-				for row in reader:
-					product = Product(company=request.user, name=row[0], description=row[1], price=row[2], quantity=row[3], sku = row[4], image_url = row[5])
-					product.save()
-				products = Product.objects.filter(company = request.user)
-				serializer = ProductSerializer(products, many = True)
+			rows = str(file.read()).split('\\r\\n')
+			for row in rows[:len(rows)-1]:
+				row = row.split('\\t')
+				product = Product(company=request.user, name=row[0], description=row[1], price=row[2], quantity=row[3], sku = row[4], image_url = row[5])
+				product.save()
+			products = Product.objects.filter(company = request.user)
+			serializer = ProductSerializer(products, many = True)
 			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+class ProductDetailAPI(GenericAPIView):
+	permission_classes = [permissions.IsAuthenticated]
+	
+	def get(self,request,pk):
+		try:
+			product = Product.objects.get(pk=pk)
+			serializer = ProductSerializer(product)
+			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+	def post(self,request,pk):
+		try:
+			data = request.data
+			product = Product.objects.filter(company = data["user"])
+			serializer = ProductSerializer(product, many = True)
+			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		
+	def put(self,request,pk):
+		try:
+			product = Product.objects.get(pk=pk)
+			data = request.data
+			serializer = ProductSerializer(product,data=data)
+			if serializer.is_valid(raise_exception = True):
+				product = serializer.save()
+				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
+			return Response({"status" : False ,"data" : serializer.errors, "message" : "Failure"}, status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+	
+	def delete(self,request,pk):
+		try:
+			product = Product.objects.get(pk=pk)
+			product.delete()
+			return Response({"status" : True ,"data" : {}, "message" : 'Success'},status = status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 
