@@ -149,7 +149,7 @@ class CouponListAPI(GenericAPIView):
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, 	status=status.HTTP_400_BAD_REQUEST)
 		
 class CouponAPI(GenericAPIView):
-	permission_classes = [permissions.IsAuthenticated]
+	#permission_classes = [permissions.IsAuthenticated]
 	
 	def get(self,request,pk):
 		try:
