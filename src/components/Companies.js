@@ -35,12 +35,7 @@ const Companies = () => {
         <Grid container alignItems='strech' spacing={3} sx={{margin: 'auto'}}>
           {carts.map((company) => (
             <Grid item xs={12} sm={12} md={6} lg={3}>
-              <Card>
-                {/* <Typography variant='h5' sx={{padding: 4}}><center>{company}</center></Typography> */}
-                <img src={company} sx={{display: 'flex',marginLeft:"10px" ,  alignItems: 'center'}} height='100px' width='200px'/>
-                <br></br>
-                <Button>Redeem Now</Button>
-              </Card> */}
+             
           
         <div class="card">
         <svg
