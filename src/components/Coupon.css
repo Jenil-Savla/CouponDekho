@@ -1,0 +1,41 @@
+/* 
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.coupon-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+.coupon-details {
+  width: 50%;
+}
+
+.coupon-image {
+  width: 30%;
+}
+
+.coupon-image img {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .coupon-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .coupon-details,
+  .coupon-image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+} */

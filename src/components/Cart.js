@@ -83,7 +83,7 @@ function Cart() {
   const dispatch = useDispatch();
   let url = "http://127.0.0.1:8000/api/product/";
   const handleClick = (card) => {
-    // console.log("clicked");
+    // count++;
     dispatch(ADD(card));
   };
 
@@ -110,6 +110,7 @@ function Cart() {
       }
     });
   }
+  // console.log(count);
 
   const posts = useSelector((state) => state.cartreducer.carts);
   // console.log(carts[2].price + carts[0].price);
@@ -266,7 +267,7 @@ function Cart() {
                   Apply
                 </Button></>}
                 <center>
-                  <Payment />
+                  <Payment  amt = {sum}/>
                 </center>
               </Box>
             </Card>

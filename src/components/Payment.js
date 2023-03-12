@@ -1,33 +1,36 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { loadScript } from "../utils/loadScript";
+var cost;
 
-const razorpayConfig = {
-  key: "rzp_test_tGTrBVhTKjYivL",
-  amount: "10000",
-  name: "COMPANY_NAME",
-  description: "PURPOSE",
-  image: "LOGO_URL",
-  handler: (response) => {
-    
-    // handle successful payment response
-    console.log("Payment Successful", response);
-  },
-  prefill: {
-    name: "CUSTOMER_NAME",
-    email: "CUSTOMER_EMAIL",
-    contact: "CUSTOMER_PHONE",
-  },
-  notes: {
-    address: "CUSTOMER_ADDRESS",
-  },
-  theme: {
-    color: "#F37254",
-  },
-};
-
-const Payment = () => {
+const Payment = ({amt}) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  cost = amt;
+
+  const razorpayConfig = {
+    key: "rzp_test_tGTrBVhTKjYivL",
+    amount: `${cost *100}`,
+    name: "COMPANY_NAME",
+    description: "PURPOSE",
+    image: "LOGO_URL",
+    handler: (response) => {
+      
+      // handle successful payment response
+      console.log("Payment Successful", response);
+    },
+    prefill: {
+      name: "CUSTOMER_NAME",
+      email: "CUSTOMER_EMAIL",
+      contact: "CUSTOMER_PHONE",
+    },
+    notes: {
+      address: "CUSTOMER_ADDRESS",
+    },
+    theme: {
+      color: "#F37254",
+    },
+  };
+  
 
   const handlePayment = () => {
     if (!scriptLoaded) {

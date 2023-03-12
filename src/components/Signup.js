@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Navigate } from "react-router-dom";
 import signup from './images/signup.jpg';
+import './style.css';
 
 
 const validEmail = new RegExp(

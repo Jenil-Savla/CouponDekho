@@ -114,6 +114,7 @@ const Generate = () => {
 
   const handleUploadClick = async () => {
     console.log(postData);
+    setActiveStep(activeStep + 1);
     var formData = new FormData();
     formData.append("product_list", file);
     // formData.append("format", postData.format);
@@ -418,7 +419,7 @@ data1.append("document", blob);
         <Paper
           component={Box}
           p={3}
-          style={{ marginTop: 90, width: 600, marginLeft: 600 }}
+          style={{ marginTop: 90, width: 750, marginLeft: 50 }}
         >
           <div>
             <Stepper

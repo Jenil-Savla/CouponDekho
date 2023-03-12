@@ -7,59 +7,77 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import coupon from './images/coupon.png';
 import Form from 'react-bootstrap/Form';
-import SearchIcon from '@mui/icons-material/Search';
-
+import axios from 'axios';
 // import { useDispatch } from 'react-redux';
 
 const Navbar = () => {
     const logoStyle = { height: 35, width: 40 }
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [ results, setResults ] = useState([]);
 //   const dispatch = useDispatch();
 
   const handleLogin = () => {
     navigate('/login')
   }
-
+  let token = localStorage.getItem("token");
+  let searchh = (q) => {
+    let config = {
+      headers: {
+        Authorization: "Token " + token,
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    axios.post(`http://127.0.0.1:8000/api/product/0/` , {"name": q } , config).then((res) => {
+      setResults(res.data);
+    });}
+  
 //   const sellBookForm = () => {
 //     navigate('/form')
 //   }
 
-  const handleSearch = () => {
-    
+  const handleSearch = (e) => {
+    navigate('/'+e.target.value)
   }
 
   
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{backgroundColor: 'white'}}>
-        <Toolbar>
-                <img src={coupon} style={logoStyle} />
-            <div>
-                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 30, marginRight: 80 }}>
+    // <Box sx={{ flexGrow: 1 }}>
+    //   <AppBar position="fixed" sx={{backgroundColor: 'white'}}>
+    //     <Toolbar>
+          <Box sx={{display: 'flex', marginTop: 2, marginLeft: 2}}>
+            <Box sx={{display: 'flex'}}>
+              <img src={coupon} style={logoStyle} />
+                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 20}}>
                   COUPONDEKHO
                 </Typography>
-            </div>
+            </Box>
+           
 
-          <Button onClick={() => navigate('/')}>Home</Button>
-          <Button onClick={() => navigate('/generate')}>Generate Coupon</Button>
-          <Button onClick={handleLogin} >Login</Button>
-          <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
           
-            {/* <SearchIcon color="primary"/> */}
-            <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Button color="primary" onClick={handleSearch} variant='contained'>Search</Button>
-          </Form>
-        </Toolbar>
-      </AppBar>
-    </Box>
+          
+            <Box sx={{marginRight: 40}}>
+                <Form className="d-flex">
+                <Form.Control
+                  type="search"
+                  placeholder="Search"
+                  className="me-2"
+                  aria-label="Search"
+                  onChange={handleSearch}
+                />
+                <Button sx={{color: 'black', borderColor: 'black'}} variant='outlined' >Search</Button>
+              </Form>
+            </Box>
+            
+            <Button onClick={() => navigate('/')} sx={{color: 'black'}}>Home</Button>
+            <Button onClick={() => navigate('/dashboard')} sx={{color: 'black'}}>Dashboard</Button>
+          <Button onClick={() => navigate('/generate')} sx={{color: 'black'}}>Generate Coupon</Button>
+          <Button onClick={handleLogin} sx={{color: 'black'}} >Login</Button>
+
+          </Box>
+    //     </Toolbar>
+    //   </AppBar>
+    // </Box>
   );
 }
 

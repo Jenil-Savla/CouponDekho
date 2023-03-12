@@ -1,6 +1,7 @@
 import Carousel from 'react-bootstrap/Carousel';
 import coupon from './images/coupon.png';
 import Companies from './Companies';
+import './styles2.css';
 
 const Home = () => {
 

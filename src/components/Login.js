@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import login from "./images/login.jpg";
+import './style.css';
 
 const validEmail = new RegExp("^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$");
 const validPassword = new RegExp("^.*(?=.{8,}).*$");
@@ -87,12 +88,13 @@ const Login = () => {
   }
 
   return (
-      <Box style={{ display: 'flex' }}>
+    <body1 sx={{ backgroundImage : './images/white.png'}}>
+<Box style={{ display: 'flex' }}>
         <Box style={{ flex: 50 }}>
           <img src={login} style={loginStyle} />
         </Box>
         <Box>
-        <Paper elavation={3} style={paperStyle}>
+        <Paper elavation={3} style={paperStyle}>  
           <Grid align="center">
             <Avatar style={avatarStyle}>
               <LoginIcon />
@@ -190,6 +192,8 @@ const Login = () => {
         </Paper>
         </Box>
       </Box>
+    </body1>
+      
 
   );
 };
