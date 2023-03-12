@@ -332,7 +332,7 @@ def validate_coupon(request):
 		pc = CouponProduct.objects.filter(coupon = coupon).values_list('product', flat=True)
 		subject = {"skus":list(Product.objects.filter(id__in = list(pc)).values_list('sku', flat=True))}
 		evaluation = run(subject, rules)
-		data = {"valid":evaluation.result}
+		data = {"valid":evaluation.result, "discount":coupon.discount_value, "type":coupon.discount_type, "max_discount":coupon.max_discount_amount}
 		'''orders = Order.objects.filter(user = request.user, payment_status = False)
 		serializer = OrderSerializer(orders, many = True)
 		data["details"] = serializer.data
