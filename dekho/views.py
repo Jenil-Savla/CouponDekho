@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate
 
 from .models import *
 from .serializers import *
+from django.db.models import Q
 
 import random
 from .rules import CartRule, CouponRule
@@ -233,10 +234,17 @@ class ProductDetailAPI(GenericAPIView):
 		
 	def post(self,request,pk):
 		try:
-			data = request.data
-			product = Product.objects.filter(company = data["user"])
-			serializer = ProductSerializer(product, many = True)
-			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
+			names = request.data["name"].split(" ")
+			products = []
+			for name in names:
+				company = User.objects.filter(name__icontains = name).values_list("email", flat = True)
+				product = Product.objects.filter(name__icontains = name)
+				serializer = ProductSerializer(product, many = True)
+				products.extend(list(serializer.data))
+				product = Product.objects.filter(company__in = company)
+				serializer = ProductSerializer(product, many = True)
+				products.extend(list(serializer.data))
+			return Response({"status" : True ,"data" : products, "message" : 'Success'},status=status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 		
