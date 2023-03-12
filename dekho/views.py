@@ -320,7 +320,7 @@ def sku_list(request):
 	
 @api_view(['POST'])
 def validate_coupon(request):
-	try:
+	#try:
 		data = request.data
 		skus = Product.objects.filter(sku__in = request.data["skus"]).values_list('sku', flat=True)
 		coupon = Coupon.objects.get(code = data["coupon"])
@@ -329,17 +329,17 @@ def validate_coupon(request):
 		subject = {"skus":list(Product.objects.filter(id__in = list(pc)).values_list('sku', flat=True))}
 		evaluation = run(subject, rules)
 		data = {"valid":evaluation.result}
-		orders = Order.objects.filter(user = request.user, payment_status = False)
+		'''orders = Order.objects.filter(user = request.user, payment_status = False)
 		serializer = OrderSerializer(orders, many = True)
 		data["details"] = serializer.data
-		orderitems = OrderItem.objects.filter(order = data["id"])
+		orderitems = OrderItem.objects.filter(order = data["details"]["id"])
 		oi_serializer = OrderItemSerializer(orderitems, many = True)
-		data["products"] = oi_serializer.data
+		data["products"] = oi_serializer.data'''
 		if evaluation.result:
 			if coupon.discount_type == "percentage":
 				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - (float(data["details"]["total_amount"]) * float(coupon.discount_value)/100)
 			else:
 				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - float(coupon.discount_value)
 		return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
-	except Exception as e:
-		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+	#except Exception as e:
+		#return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
