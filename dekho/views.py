@@ -89,13 +89,20 @@ class CouponListAPI(GenericAPIView):
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 	
 	def post(self,request):
-		#try:
+		try:
 			data = dict(request.data)
 			#Generate Coupon Code
 			data["code"] = generate_code(data["format"],12)
+			print(data)
 			if "product_list" in data.keys():
-				data["redemption_limit"] = 1
-				data["product_list"].save()
+				print(data)
+				data["redemption_limit"] = 1	
+				file = data["product_list"][0]
+				rows = str(file.read()).split('\\r\\n')
+				mails = []
+				for row in rows[:len(rows)-1]:
+					row = row.split('\\t')
+					mails.append(row[1])
 			serializer = CouponSerializer(data=data)
 			if serializer.is_valid(raise_exception = True):
 				coupon = serializer.save(user = request.user)
@@ -109,8 +116,8 @@ class CouponListAPI(GenericAPIView):
 							cp.save()
 				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
 			return Response({"status" : False ,"data" : serializer.errors, "message" : "Failure"}, status=status.HTTP_400_BAD_REQUEST)
-		#except Exception as e:
-			#return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		except Exception as e:
+			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, 	status=status.HTTP_400_BAD_REQUEST)
 		
 class CouponAPI(GenericAPIView):
 	permission_classes = [permissions.IsAuthenticated]
