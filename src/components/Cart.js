@@ -1,6 +1,6 @@
 import React from "react";
 import "./css/card.css";
-import { Button, Grid, Card, Typography } from '@mui/material'
+import { Button, Grid, Card, Typography, Box, TextField } from '@mui/material'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useDispatch, useSelector } from 'react-redux';
 import CardContent from '@mui/material/CardContent';
@@ -8,10 +8,13 @@ import CardActions from '@mui/material/CardActions';
 import { Link } from 'react-router-dom'; 
 import { ADD } from '../redux/actions/action';
 import { DLT } from '../redux/actions/action';
+import CloseIcon from '@mui/icons-material/Close';
+import Payment from "./Payment";
+
 
 function Cart() {
 
-  const carts = [{company: 'Amazon', tag: 'prime', price: 12, id: '1' }, {company: 'Flipkart', tag: 'prime', price: 123, id: '2'}, {company: 'Myntra', tag: 'prime', price: 123,  id: '3'}, {company: 'Snapdeal',  tag: 'prime', price: 123, id: '4'}];
+  const carts = [{company: 'Amazon', tag: 'prime', price: 12, id: '1', image: 'https://assets.devfolio.co/hackathons/7a20cc713c0c4dd3aa4a7eeb78ff2bb0/sponsors/872c24cd4a4641769a5a4578e8aa1812/68.png' }, {company: 'Flipkart', tag: 'prime', price: 123, id: '2', image: 'https://th.bing.com/th/id/OIP._qfZ13lDcG2ICCwXzI_YywHaBM?pid=ImgDet&rs=1'}, {company: 'Myntra', tag: 'prime', price: 123,  id: '3', image: 'https://stakehound.com/wp-content/uploads/2021/04/Polygon-logo.png'}, {company: 'Snapdeal',  tag: 'prime', price: 123, id: '4'}];
   let total = [];
   const dispatch = useDispatch();
   
@@ -22,10 +25,13 @@ function Cart() {
 
   const posts = useSelector((state) => state.cartreducer.carts);
   // console.log(carts[2].price + carts[0].price);
+  
 
   const renderedPosts = posts.map(post => (
     <Grid item xs={2} key={post.id}>
-    <Card sx={{ maxWidth: 345, marginTop:3 , marginLeft: 10 , display: 'flex'}}>
+      
+    <Card sx={{ maxWidth: 345, marginTop:3 , marginLeft: 5 , display: 'flex', paddingLeft: 2}}>
+    <img src={post.image} height='50px' width='100px'/>
     <CardContent>
       <Typography gutterBottom variant="h5" component="div">
       {post.company}
@@ -35,7 +41,7 @@ function Cart() {
       </Typography>
     </CardContent>
     <CardActions> 
-      <Button size="small" onClick={() => dlt(post.id)} color='primary' variant='contained' sx={{marginLeft: 15}}>DELETE</Button>
+      <CloseIcon size="small" onClick={() => dlt(post.id)} sx={{marginLeft: 5}} />
     </CardActions>
   </Card>
   </Grid>
@@ -49,7 +55,7 @@ function Cart() {
     sum+=p;
   }
 
-  console.log(sum);
+  // console.log(sum);
 
   const dlt = (id) => {
     dispatch(DLT(id));
@@ -57,87 +63,49 @@ function Cart() {
   return (
     <>
     <div>
-        <div style={{display: 'flex', marginTop: 50}}>
-        <Typography variant="h4" align="center" style={{marginLeft: 50, marginBottom: 5}}>Products</Typography>
-        <Button color='primary' variant='contained' height='100px' style={{ marginLeft: "auto" , marginRight: 50}}><ShoppingCartIcon />Cart</Button>
-        </div>
-        <div style={{display: 'flex'}}>
-        <Grid container alignItems='strech' spacing={3} sx={{flex: '60%', marginLeft: 5}}>
+      <Box style={{display: 'flex'}}>
+        <Box sx={{flex: 70}}>
+          <Typography variant="h4" align="center" style={{marginLeft: 50, marginBottom: 10, marginTop: 10}}>Products</Typography>
+        <Grid container alignItems='strech' spacing={3} sx={{marginLeft: 1}} >
           {carts.map((card) => (
-            <Grid item>
-              <div class="card">
-        <svg
-          viewBox="0 0 784.37 1277.39"
-          clip-rule="evenodd"
-          fill-rule="evenodd"
-          image-rendering="optimizeQuality"
-          text-rendering="geometricPrecision"
-          shape-rendering="geometricPrecision"
-          version="1.1"
-          height="100%"
-          width="100%"
-          xmlSpace="preserve"
-          class="img"
-        >
-          <g id="Layer_x0020_1">
-            <metadata id="CorelCorpID_0Corel-Layer"></metadata>
-            <g id="_1421394342400">
-              <g>
-                <polygon
-                  points="392.07,0 383.5,29.11 383.5,873.74 392.07,882.29 784.13,650.54"
-                  fill-rule="nonzero"
-                  fill="#343434"
-                ></polygon>
-                <polygon
-                  points="392.07,0 -0,650.54 392.07,882.29 392.07,472.33"
-                  fill-rule="nonzero"
-                  fill="#8C8C8C"
-                ></polygon>
-                <polygon
-                  points="392.07,956.52 387.24,962.41 387.24,1263.28 392.07,1277.38 784.37,724.89"
-                  fill-rule="nonzero"
-                  fill="#3C3C3B"
-                ></polygon>
-                <polygon
-                  points="392.07,1277.38 392.07,956.52 -0,724.89"
-                  fill-rule="nonzero"
-                  fill="#8C8C8C"
-                ></polygon>
-                <polygon
-                  points="392.07,882.29 784.13,650.54 392.07,472.33"
-                  fill-rule="nonzero"
-                  fill="#141414"
-                ></polygon>
-                <polygon
-                  points="0,650.54 392.07,882.29 392.07,472.33"
-                  fill-rule="nonzero"
-                  fill="#393939"
-                ></polygon>
-              </g>
-            </g>
-          </g>
-        </svg>
-        <div class="textBox">
-          <p class="text head">{card.company}</p>
-          <span>{card.tag}</span>
-          <p class="text price">{card.price}</p>
-          <button class="btn" style={{color: 'white'}} onClick={() => handleClick(card)}>Add to cart</button>
-        </div>
-      </div>
+            <Grid item lg={4}>
+              {/* <Card sx={{ maxWidth: 300, marginTop:3 , padding: 5}}> */}
+                <img src={card.image} width='200px' height='100'/>
+                <Box sx={{display: 'flex', marginTop: 3}}>
+                <Typography variant="h5" component="div" sx={{marginRight: 12}}>{card.company}</Typography>
+                <Typography variant="h5" component="div" color='grey'>₹{card.price}</Typography>
+                </Box>
+                <Button color='inherit' variant='outlined' size='small' onClick={() => handleClick(card)} sx={{ marginTop: 2, marginLeft: 5 }}>Add to Cart</Button>
+              {/* </Card> */}
             </Grid>
           ))}
-        </Grid>
-        <Grid sx={{flex: '40%', marginLeft: '10' }}>
-        <Card sx={{width: '100%' , height: '100%'}}>
+        </Grid>    
+        </Box>
+        <Box>
+        <Card sx={{flex: 30, backgroundColor: 'aliceblue', marginLeft: 2, marginTop: 4, marginRight: 4, height: 250}}>
+          <Box>
+          <Typography variant='h5' sx={{marginTop: 2}}><center>Total Amount: {sum}</center></Typography>
+              <Typography variant="h6" align="center" sx={{ mt: 2, mb: 1 }}>Do you have any discount code?</Typography>
+              <TextField placeholder="Enter coupon code" variant="outlined" type='name' 
+                    InputProps={{
+                      sx: { borderRadius: 10, color: 'region', backgroundColor: 'white', marginLeft: 5},}} />
+                <Button variant="contained" size='large' sx={{marginTop: 0.7, marginLeft: 3, marginBottom: 3, borderRadius: 10, marginRight: 2}}>Apply</Button>
+                <center><Payment /></center>
+          </Box>
+        </Card>
+        <Grid sx={{flex: '40%', marginTop: 5, marginRight: 4, }}>
+          <Grid>
+        <Typography variant='h6'><center>Added Products</center></Typography>
             {renderedPosts}    
-        </Card>
-        <Card>
-        <Typography>Total Amount: {sum}</Typography>
-        </Card>
+          </Grid>
         </Grid>
+        </Box>
+
+                      
+            
         
+        </Box>
         
-        </div>
     </div>
       
     </>

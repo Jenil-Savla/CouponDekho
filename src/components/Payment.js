@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { loadScript } from "../utils/loadScript";
 
@@ -43,7 +44,7 @@ const Payment = () => {
 
   return (
     <div>
-      <button onClick={handlePayment}>Pay Now</button>
+      <Button onClick={handlePayment} variant='contained' size='large' color='success' sx={{ borderRadius: 10}}>Pay Now</Button>
     </div>
   );
 };
