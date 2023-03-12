@@ -160,10 +160,17 @@ class CouponAPI(GenericAPIView):
 		
 	def post(self,request,pk):
 		try:
-			data = request.data
-			coupon = Coupon.objects.filter(user = data["user"])
-			serializer = CouponSerializer(coupon, many = True)
-			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
+			names = request.data["name"].split(" ")
+			coupons = []
+			for name in names:
+				product = Product.objects.filter(name__icontains = name).values_list("company", flat = True)
+				coupon = Coupon.objects.filter(user__name__icontains = name)
+				serializer = CouponSerializer(coupon, many = True)
+				coupons.extend(list(serializer.data))
+				coupon = Coupon.objects.filter(user__in = product)
+				serializer = CouponSerializer(coupon, many = True)
+				coupons.extend(list(serializer.data))
+			return Response({"status" : True ,"data" : coupons, "message" : 'Success'},status=status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 	
