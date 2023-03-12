@@ -89,10 +89,13 @@ class CouponListAPI(GenericAPIView):
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 	
 	def post(self,request):
-		try:
-			data = request.data
+		#try:
+			data = dict(request.data)
 			#Generate Coupon Code
 			data["code"] = generate_code(data["format"],12)
+			if "product_list" in data.keys():
+				data["redemption_limit"] = 1
+				data["product_list"].save()
 			serializer = CouponSerializer(data=data)
 			if serializer.is_valid(raise_exception = True):
 				coupon = serializer.save(user = request.user)
@@ -106,8 +109,8 @@ class CouponListAPI(GenericAPIView):
 							cp.save()
 				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
 			return Response({"status" : False ,"data" : serializer.errors, "message" : "Failure"}, status=status.HTTP_400_BAD_REQUEST)
-		except Exception as e:
-			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+		#except Exception as e:
+			#return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 		
 class CouponAPI(GenericAPIView):
 	permission_classes = [permissions.IsAuthenticated]
@@ -259,7 +262,7 @@ class OrderAPI(GenericAPIView):
 			serializer = OrderSerializer(orders, many = True)
 			data = {}
 			data["details"] = serializer.data
-			orderitems = OrderItem.objects.filter(order = data["id"])
+			orderitems = OrderItem.objects.filter(order = data["details"]["id"])
 			oi_serializer = OrderItemSerializer(orderitems, many = True)
 			data["products"] = oi_serializer.data
 			return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
@@ -285,6 +288,18 @@ def validate_coupon(request):
 		pc = CouponProduct.objects.filter(coupon = coupon).values_list('product', flat=True)
 		subject = {"skus":list(Product.objects.filter(id__in = list(pc)).values_list('sku', flat=True))}
 		evaluation = run(subject, rules)
-		return Response({"status" : True ,"data" : {"valid":evaluation.result}, "message" : 'Success'},status = status.HTTP_200_OK)
+		data = {"valid":evaluation.result}
+		orders = Order.objects.filter(user = request.user, payment_status = False)
+		serializer = OrderSerializer(orders, many = True)
+		data["details"] = serializer.data
+		orderitems = OrderItem.objects.filter(order = data["id"])
+		oi_serializer = OrderItemSerializer(orderitems, many = True)
+		data["products"] = oi_serializer.data
+		if evaluation.result:
+			if coupon.discount_type == "percentage":
+				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - (float(data["details"]["total_amount"]) * float(coupon.discount_value)/100)
+			else:
+				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - float(coupon.discount_value)
+		return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
 	except Exception as e:
 		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
