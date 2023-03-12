@@ -125,7 +125,6 @@ class CouponListAPI(GenericAPIView):
 						data["applicable_sku"] = data["applicable_sku"].split(",")
 						products = Product.objects.filter(sku__in = data["applicable_sku"])
 						for product in products:
-							print(product)
 							cp = CouponProductSerializer(data = {"coupon" : coupon.id,"product" : product.id})
 							if cp.is_valid(raise_exception = True):
 								cp.save()
@@ -360,5 +359,16 @@ def validate_coupon(request):
 			else:
 				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - float(coupon.discount_value)'''
 		return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
+	except Exception as e:
+		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+	
+@api_view(['POST'])
+def company_coupons(request):
+	try:
+		data = request.data["name"]
+		company = User.objects.filter(name__icontains = data).values_list('email', flat=True)
+		coupons = Coupon.objects.filter(user__in = company)
+		serializer = CouponSerializer(coupons, many = True)
+		return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
 	except Exception as e:
 		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)

@@ -13,4 +13,5 @@ urlpatterns = [
     path('orderitem/', views.OrderItemAPI.as_view(), name="OrderItem"),
     path('sku_list',views.sku_list,name="sku_list"),
     path('validate_coupon',views.validate_coupon,name="validate_coupon"),
+    path('company_coupon',views.company_coupons,name="company_coupon"),
 ]
