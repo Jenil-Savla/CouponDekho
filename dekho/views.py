@@ -12,8 +12,14 @@ from .serializers import *
 
 import random
 from .rules import CartRule, CouponRule
-
 from python_simple_rules_engine import run
+
+from django.core.mail import EmailMessage, get_connection
+from django.conf import settings
+
+def send_email(data):
+        email = EmailMessage(subject=data['email_subject'], body=data['email_body'],to=[data['to_email']],from_email=settings.EMAIL_HOST_USER)
+        email.send()
 
 def generate_code(format, length):
     coupon_code = ''
@@ -92,28 +98,50 @@ class CouponListAPI(GenericAPIView):
 		try:
 			data = dict(request.data)
 			#Generate Coupon Code
-			data["code"] = generate_code(data["format"],12)
-			print(data)
 			if "product_list" in data.keys():
-				print(data)
 				data["redemption_limit"] = 1	
 				file = data["product_list"][0]
 				rows = str(file.read()).split('\\r\\n')
 				mails = []
+				data["code"] = generate_code(data["format"][0],12)
+				k = data["code"]
 				for row in rows[:len(rows)-1]:
 					row = row.split('\\t')
 					mails.append(row[1])
-			serializer = CouponSerializer(data=data)
-			if serializer.is_valid(raise_exception = True):
-				coupon = serializer.save(user = request.user)
-				if data["applicable_to"] == "specific_sku":
-					data["applicable_sku"] = data["applicable_sku"].split(",")
-					products = Product.objects.filter(sku__in = data["applicable_sku"])
-					for product in products:
-						print(product)
-						cp = CouponProductSerializer(data = {"coupon" : coupon.id,"product" : product.id})
-						if cp.is_valid(raise_exception = True):
-							cp.save()
+					data_mail = {'email_body': f'Congratulations! You have been awarded with a coupon having code {k}', 'email_subject':'Coupon Code', 'to_email' : row[1]}
+					send_email(data_mail)
+				data["format"] = data["format"][0]
+				data["applicable_to"] = data["applicable_to"][0]
+				data["discount_type"] = data["discount_type"][0]
+				data["discount_value"] = data["discount_value"][0]
+				data["max_discount_amount"] = data["max_discount_amount"][0]
+				data["applicable_sku"] = data["applicable_sku"][0]
+				data['expiry_date'] = data["expiry_date"][0]
+				serializer = CouponSerializer(data=data)
+				if serializer.is_valid(raise_exception = True):
+					coupon = serializer.save(user = request.user)
+					if data["applicable_to"] == "specific_sku":
+						data["applicable_sku"] = data["applicable_sku"].split(",")
+						products = Product.objects.filter(sku__in = data["applicable_sku"])
+						for product in products:
+							print(product)
+							cp = CouponProductSerializer(data = {"coupon" : coupon.id,"product" : product.id})
+							if cp.is_valid(raise_exception = True):
+								cp.save()
+				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
+			else:
+				data["code"] = generate_code(data["format"],12)
+				serializer = CouponSerializer(data=data)
+				if serializer.is_valid(raise_exception = True):
+					coupon = serializer.save(user = request.user)
+					if data["applicable_to"] == "specific_sku":
+						data["applicable_sku"] = data["applicable_sku"].split(",")
+						products = Product.objects.filter(sku__in = data["applicable_sku"])
+						for product in products:
+							print(product)
+							cp = CouponProductSerializer(data = {"coupon" : coupon.id,"product" : product.id})
+							if cp.is_valid(raise_exception = True):
+								cp.save()
 				return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status=status.HTTP_200_OK)
 			return Response({"status" : False ,"data" : serializer.errors, "message" : "Failure"}, status=status.HTTP_400_BAD_REQUEST)
 		except Exception as e:
