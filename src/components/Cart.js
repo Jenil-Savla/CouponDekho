@@ -17,14 +17,15 @@ function Cart() {
   const carts = [{company: 'Amazon', tag: 'prime', price: 12, id: '1', image: 'https://assets.devfolio.co/hackathons/7a20cc713c0c4dd3aa4a7eeb78ff2bb0/sponsors/872c24cd4a4641769a5a4578e8aa1812/68.png' }, {company: 'Flipkart', tag: 'prime', price: 123, id: '2', image: 'https://th.bing.com/th/id/OIP._qfZ13lDcG2ICCwXzI_YywHaBM?pid=ImgDet&rs=1'}, {company: 'Myntra', tag: 'prime', price: 123,  id: '3', image: 'https://stakehound.com/wp-content/uploads/2021/04/Polygon-logo.png'}, {company: 'Snapdeal',  tag: 'prime', price: 123, id: '4'}];
   let total = [];
   const dispatch = useDispatch();
-  
+  // let count=0;
   const handleClick = (card) => {
-    // console.log("clicked");
+    // count++;
     dispatch(ADD(card));
   }
+  // console.log(count);
 
   const posts = useSelector((state) => state.cartreducer.carts);
-  // console.log(carts[2].price + carts[0].price);
+  console.log(posts);
   
 
   const renderedPosts = posts.map(post => (

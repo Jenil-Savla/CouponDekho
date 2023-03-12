@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
 import { loadScript } from "../utils/loadScript";
-
+var cost;
 const razorpayConfig = {
   key: "rzp_test_tGTrBVhTKjYivL",
-  amount: "100",
+  amount: {cost}*100,
   name: "COMPANY_NAME",
   description: "PURPOSE",
   image: "LOGO_URL",
@@ -26,8 +26,10 @@ const razorpayConfig = {
   },
 };
 
-const Payment = () => {
+const Payment = ({amt}) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  cost = amt;
+  console.log(cost);
 
   const handlePayment = () => {
     if (!scriptLoaded) {

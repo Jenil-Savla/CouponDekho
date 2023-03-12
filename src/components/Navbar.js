@@ -7,7 +7,6 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import coupon from './images/coupon.png';
 import Form from 'react-bootstrap/Form';
-import SearchIcon from '@mui/icons-material/Search';
 
 // import { useDispatch } from 'react-redux';
 
@@ -31,34 +30,38 @@ const Navbar = () => {
 
   
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{backgroundColor: 'white'}}>
-        <Toolbar>
-                <img src={coupon} style={logoStyle} />
-            <div>
-                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 30, marginRight: 80 }}>
+    // <Box sx={{ flexGrow: 1 }}>
+    //   <AppBar position="fixed" sx={{backgroundColor: 'white'}}>
+    //     <Toolbar>
+          <Box sx={{display: 'flex', marginTop: 2, marginLeft: 2}}>
+            <Box sx={{display: 'flex'}}>
+              <img src={coupon} style={logoStyle} />
+                <Typography variant="h6" sx={{ color: 'hotpink', fontSize: 24, marginRight: 30}}>
                   COUPONDEKHO
                 </Typography>
-            </div>
-
-          <Button onClick={() => navigate('/')}>Home</Button>
-          <Button onClick={() => navigate('/generate')}>Generate Coupon</Button>
-          <Button onClick={handleLogin} >Login</Button>
+            </Box>
           
-            {/* <SearchIcon color="primary"/> */}
-            <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <Button color="primary" onClick={handleSearch} variant='contained'>Search</Button>
-          </Form>
-        </Toolbar>
-      </AppBar>
-    </Box>
+            <Box sx={{marginRight: 50}}>
+                <Form className="d-flex">
+                <Form.Control
+                  type="search"
+                  placeholder="Search"
+                  className="me-2"
+                  aria-label="Search"
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <Button sx={{color: 'black', borderColor: 'black'}} variant='outlined' onClick={handleSearch}>Search</Button>
+              </Form>
+            </Box>
+            
+            <Button onClick={() => navigate('/')} sx={{color: 'black'}}>Home</Button>
+          <Button onClick={() => navigate('/generate')} sx={{color: 'black'}}>Generate Coupon</Button>
+          <Button onClick={handleLogin} sx={{color: 'black'}} >Login</Button>
+
+          </Box>
+    //     </Toolbar>
+    //   </AppBar>
+    // </Box>
   );
 }
 
