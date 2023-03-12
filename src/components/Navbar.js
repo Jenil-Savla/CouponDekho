@@ -44,6 +44,7 @@ const Navbar = () => {
           <Button onClick={() => navigate('/')}>Home</Button>
           <Button onClick={() => navigate('/generate')}>Generate Coupon</Button>
           <Button onClick={handleLogin} >Login</Button>
+          <Button onClick={() => navigate('/dashboard')}>Dashboard</Button>
           
             {/* <SearchIcon color="primary"/> */}
             <Form className="d-flex">
