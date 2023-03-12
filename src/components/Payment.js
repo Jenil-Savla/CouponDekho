@@ -4,7 +4,7 @@ import { loadScript } from "../utils/loadScript";
 
 const razorpayConfig = {
   key: "rzp_test_tGTrBVhTKjYivL",
-  amount: "100",
+  amount: "10000",
   name: "COMPANY_NAME",
   description: "PURPOSE",
   image: "LOGO_URL",
