@@ -192,8 +192,13 @@ class ProductAPI(GenericAPIView):
 	def get(self,request):
 		try:
 			products = Product.objects.all()
-			serializer = ProductSerializer(products, many = True)
-			return Response({"status" : True ,"data" : serializer.data, "message" : 'Success'},status = status.HTTP_200_OK)
+			data = []
+			for i in range(len(products)):
+				dict = {}
+				dict["product"] = ProductSerializer(products[i]).data
+				dict["company_name"] = products[i].company.name
+				data.append(dict)
+			return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
 		except Exception as e:
 			return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
 		
