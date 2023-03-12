@@ -32,8 +32,8 @@ import { useEffect } from "react";
 // import FileBase from 'react-file-base64';
 // import {makeStyles} from '@mui/styles';
 // import generate from './images/generate.png';
-import "./style.css";
-import Copy from './Copy_clipboard'
+// import "./style.css";
+import Copy from "./Copy_clipboard";
 // const useStyles = makeStyles(() => ({
 //     root: {
 //       "& .MuiStepIcon-active": { color: "red" },
@@ -62,17 +62,35 @@ let url = "http://127.0.0.1:8000/api/coupon/";
 
 const Generate = () => {
   const [sku, setsku] = useState([]);
+  const [jenil, setJenil] = useState(true);
+  const [file, setFile] = useState(null);
+  const [dynamic, setDynamic] = useState(false);
+  const handleFileInputChange = async (event) => {
+    setFile(event.target.files[0]);
+    setJenil(false);
+  };
 
+  const handlemee = () => {
+    setDynamic(true);
+  };
+
+  let handleme = (e) => {
+    document.getElementById("133").click();
+  };
   let token = localStorage.getItem("token");
+  const formData = new FormData();
+  formData.append("product_list", file);
   let config = {
     headers: {
       Authorization: "Token " + token,
+      "Content-Type": "multipart/form-data",
     },
   };
+
   useEffect(() => {
     let url1 = "http://127.0.0.1:8000/api/sku_list";
     axios
-      .get(url1, config)
+      .get(url1, formData, config)
       .then((res) => {
         setsku(res.data.data);
       })
@@ -80,6 +98,7 @@ const Generate = () => {
         console.log(err);
       });
   }, []);
+
   const [postData, setPostData] = useState({
     discountAmt: "",
     discountType: "",
@@ -88,10 +107,60 @@ const Generate = () => {
     format: "",
     applicableTo: "",
     date: "",
+    file: "",
   });
+  console.log(postData);
+  console.log(file);
 
+  const handleUploadClick = async () => {
+    console.log(postData);
+    var formData = new FormData();
+    formData.append("product_list", file);
+    // formData.append("format", postData.format);
+    // formData.append("applicable_to", postData.applicableTo);
+    // formData.append("discount_type", postData.discountType);
+    // formData.append("discount_value", postData.discountAmt);
+    // formData.append("redemption_limit", postData.limit);
+    // formData.append("max_discount_amount", postData.maxdiscount);
+    // formData.append("expiry_date", postData.date);
+    // formData.append("applicable_sku", selectedsku);
+    let data = {
+      format: JSON.stringify(postData.format.toLowerCase()),
+      applicable_to: postData.applicableTo,
+      discount_type: postData.discountType,
+      discount_value: postData.discountAmt,
+      redemption_limit: postData.limit,
+      max_discount_amount: postData.maxdiscount,
+      expiry_date: postData.date,
+      applicable_sku: selectedsku,
+      product_list: file,
+    };
+    formData.append("data", JSON.stringify(data));
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
+    const json = JSON.stringify(data);
+    const blob = new Blob([json], {
+      type: "application/json",
+    });
+    const data1 = new FormData();
+data1.append("document", blob);
+    axios
+      .post("http://127.0.0.1:8000/api/coupon/", data1, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const [code, setCode] = useState("");
-  const [selectedsku , setselectedsku] = useState([]);
+  const [selectedsku, setselectedsku] = useState([]);
   const type = postData.discountType;
 
   const validDiscount = new RegExp("^.*(?=.{ ,100}).*$");
@@ -157,7 +226,7 @@ const Generate = () => {
   };
 
   const handleInputChange = (e) => {
-    setselectedsku( e.target.value);
+    setselectedsku(e.target.value);
   };
 
   const handleAddClick = (e) => {
@@ -301,7 +370,7 @@ const Generate = () => {
               </Select>
             </FormControl>
 
-            <FormControl fullWidth sx = {{ marginTop : '10px'}} >
+            <FormControl fullWidth sx={{ marginTop: "10px" }}>
               <InputLabel id="demo-simple-select-label">Select sku</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -326,7 +395,7 @@ const Generate = () => {
                 })}
               </Select>
             </FormControl>
-{/* 
+            {/* 
             <Button
               color="primary"
               variant="contained"
@@ -369,8 +438,8 @@ const Generate = () => {
               <Container>
                 <Typography variant="h3">Successful Generation</Typography>
                 <Typography variant="h5">
-                  Your coupon code is: {code? code : "421644993277"}
-                  <Copy text={code? code : "421644993277" }></Copy>
+                  Your coupon code is: {code ? code : "421644993277"}
+                  <Copy text={code ? code : "421644993277"}></Copy>
                 </Typography>
               </Container>
             ) : (
@@ -391,6 +460,53 @@ const Generate = () => {
                 >
                   {activeStep === 2 ? "Finish" : "Next"}
                 </Button>
+                {activeStep === 2 ? (
+                  <Button
+                    variant="contained"
+                    sx={{
+                      marginTop: 3,
+                      marginLeft: 24,
+                      backgroundColor: "green",
+                    }}
+                    onClick={handlemee}
+                  >
+                    Generate Dynamic
+                  </Button>
+                ) : null}
+
+                <input
+                  type="file"
+                  onChange={handleFileInputChange}
+                  style={{ display: "none" }}
+                  id="133"
+                />
+                {dynamic ? (
+                  jenil ? (
+                    <Button
+                      variant="contained"
+                      onClick={handleme}
+                      sx={{
+                        marginTop: 3,
+                        marginLeft: 24,
+                        backgroundColor: "green",
+                      }}
+                    >
+                      Add Files
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      onClick={handleUploadClick}
+                      sx={{
+                        marginTop: 3,
+                        marginLeft: 24,
+                        backgroundColor: "green",
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  )
+                ) : null}
               </>
             )}
           </div>

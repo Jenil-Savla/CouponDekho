@@ -10,7 +10,7 @@ const data = [
   ];
   
   const Graph = () => (
-    <LineChart width={600} height={300} data={data}>
+    <LineChart width={600} height={350} data={data}>
       <XAxis dataKey="name" />
       <YAxis />
       <CartesianGrid stroke="#eee" strokeDasharray="5 5" />

@@ -3,7 +3,7 @@ import React from 'react'
 import Payment from './Payment';
 
 const Companies = () => {
-  const companies = ['https://assets.devfolio.co/hackathons/7a20cc713c0c4dd3aa4a7eeb78ff2bb0/sponsors/872c24cd4a4641769a5a4578e8aa1812/68.png',  'https://cryptosrus.com/wp-content/uploads/2021/07/Filecoin-logo.jpg', 'https://rezonant.net/wp-content/uploads/2022/04/Kuhoo-logo-for-website.png', 'https://th.bing.com/th/id/OIP._qfZ13lDcG2ICCwXzI_YywHaBM?pid=ImgDet&rs=1','https://stakehound.com/wp-content/uploads/2021/04/Polygon-logo.png','https://th.bing.com/th/id/R.c9a6d9c058b65bcbe53bcd3f2a556f6d?rik=Gp3Os%2bsChAyQ%2bQ&riu=http%3a%2f%2f1000marcas.net%2fwp-content%2fuploads%2f2021%2f06%2fSUGAR-Cosmetics-logo-2048x1152.png&ehk=Nj9mHi89fDdI3kpWh62w8IqwMuXztynk2zk0DwODk3s%3d&risl=&pid=ImgRaw&r=0'];
+  const companies = ['https://assets.devfolio.co/hackathons/7a20cc713c0c4dd3aa4a7eeb78ff2bb0/sponsors/872c24cd4a4641769a5a4578e8aa1812/68.png',  'https://cryptosrus.com/wp-content/uploads/2021/07/Filecoin-logo.jpg', 'https://rezonant.net/wp-content/uploads/2022/04/Kuhoo-logo-for-website.png', 'https://th.bing.com/th/id/OIP._qfZ13lDcG2ICCwXzI_YywHaBM?pid=ImgDet&rs=1','https://stakehound.com/wp-content/uploads/2021/04/Polygon-logo.png','https://brandongaille.com/wp-content/uploads/2014/02/17-Greatest-Indian-Company-Logos-of-All-Time.jpg'];
   // const companies = ['amazon', 'flipkart']
 
   const carts = [{company: 'Amazon', tag: 'Samsung', price: 1200, discount: '20%' }, {company: 'Myntra', tag: 'Handbag', price: 1000, discount: '10%'}, {company: 'flipkart', tag: 'LCD', price: 10000, discount: '15%'}, {company: 'BigBasket',  tag: 'Apples', price: 120, discount: '5%'}];
@@ -18,10 +18,7 @@ const Companies = () => {
     <Box sx={{padding: 10}}>
     <Box>
         <h1>Companies</h1>
-        <Card >
-                  <CardMedia sx={{display: 'flex', alignItems: 'center'}} image={companies[0]}/>
-                                 
-                </Card>
+ 
         <Grid container alignItems='strech' spacing={3} sx={{margin: 'auto'}}>
           {companies.map((company) => (
             <Grid item xs={12} sm={12} md={6} lg={2} >
@@ -38,9 +35,10 @@ const Companies = () => {
         <Grid container alignItems='strech' spacing={3} sx={{margin: 'auto'}}>
           {carts.map((company) => (
             <Grid item xs={12} sm={12} md={6} lg={3}>
-              {/* <Card>
-                <Typography variant='h5' sx={{padding: 4}}><center>{company}</center></Typography>
-                <CardMedia sx={{display: 'flex', alignItems: 'center'}} image={company}/>
+              <Card>
+                {/* <Typography variant='h5' sx={{padding: 4}}><center>{company}</center></Typography> */}
+                <img src={company} sx={{display: 'flex',marginLeft:"10px" ,  alignItems: 'center'}} height='100px' width='200px'/>
+                <br></br>
                 <Button>Redeem Now</Button>
               </Card> */}
           
@@ -116,11 +114,13 @@ const Companies = () => {
         <Grid container alignItems='strech' spacing={3} sx={{margin: 'auto'}}>
           {companies.map((company) => (
             <Grid item xs={12} sm={12} md={6} lg={3}>
-              <Card>
-                <Typography variant='h5' sx={{padding: 4}}><center>{company}</center></Typography>
-                <Button>Redeem Now</Button>
-              </Card>
-            </Grid>
+            <Card>
+              {/* <Typography variant='h5' sx={{padding: 4}}><center>{company}</center></Typography> */}
+              <img src={company} sx={{display: 'flex',marginLeft:"10px" ,  alignItems: 'center'}} height='100px' width='200px'/>
+              <br></br>
+              <Button>Redeem Now</Button>
+            </Card>
+          </Grid>
           ))}
         </Grid>
     </Box>
