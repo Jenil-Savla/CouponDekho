@@ -206,9 +206,13 @@ class ProductAPI(GenericAPIView):
 		try:
 			file = request.data["product_list"]
 			rows = str(file.read()).split('\\r\\n')
+			st = 1
 			for row in rows[:len(rows)-1]:
 				row = row.split('\\t')
-				product = Product(company=request.user, name=row[0], description=row[1], price=row[2], quantity=row[3], sku = row[4], image_url = row[5])
+				if st:
+					row[0] = row[0][2:]
+					st = 0
+				product = Product(company=request.user, name=row[0], description=row[1], price=row[2], quantity=row[3], sku = row[4][:len(row[4])-2], image_url = row[5])
 				product.save()
 			products = Product.objects.filter(company = request.user)
 			serializer = ProductSerializer(products, many = True)
@@ -320,11 +324,11 @@ def sku_list(request):
 	
 @api_view(['POST'])
 def validate_coupon(request):
-	#try:
+	try:
 		data = request.data
 		skus = Product.objects.filter(sku__in = request.data["skus"]).values_list('sku', flat=True)
 		coupon = Coupon.objects.get(code = data["coupon"])
-		rules = [CouponRule(coupon.redemption_limit, coupon.expiry_date, coupon.active, coupon.used), CartRule(list(skus))]
+		rules = [CouponRule(coupon.redemption_limit, coupon.expiry_date, coupon.active, coupon.used, coupon.applicable_to), CartRule(list(skus),coupon.applicable_to)]
 		pc = CouponProduct.objects.filter(coupon = coupon).values_list('product', flat=True)
 		subject = {"skus":list(Product.objects.filter(id__in = list(pc)).values_list('sku', flat=True))}
 		evaluation = run(subject, rules)
@@ -334,12 +338,12 @@ def validate_coupon(request):
 		data["details"] = serializer.data
 		orderitems = OrderItem.objects.filter(order = data["details"]["id"])
 		oi_serializer = OrderItemSerializer(orderitems, many = True)
-		data["products"] = oi_serializer.data'''
+		data["products"] = oi_serializer.data
 		if evaluation.result:
 			if coupon.discount_type == "percentage":
 				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - (float(data["details"]["total_amount"]) * float(coupon.discount_value)/100)
 			else:
-				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - float(coupon.discount_value)
+				data["details"]["total_amount"] = float(data["details"]["total_amount"]) - float(coupon.discount_value)'''
 		return Response({"status" : True ,"data" : data, "message" : 'Success'},status = status.HTTP_200_OK)
-	#except Exception as e:
-		#return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
+	except Exception as e:
+		return Response({"status" : False ,"data" : {}, "message" : f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
