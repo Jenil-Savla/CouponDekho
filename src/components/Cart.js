@@ -157,7 +157,7 @@ function Cart() {
   for (let i = 0; i < posts.length; i++) {
     total.push(posts[i].price);
     let p = parseInt(total[i]);
-    sum += p*(1-discount);
+    sum += p*(1-discount/100);
     sum2 += p;
   }
 

@@ -64,6 +64,7 @@ const [isLoggedIn, setLogin] = useState("");
         .post(url, data)
         .then((res) => {
           localStorage.setItem('token', res.data.data.token);
+          console.log(res.data.data.token);
           setLogin(true);
         })
         .catch((err) => {
