@@ -217,6 +217,7 @@ class ProductAPI(GenericAPIView):
     def get(self, request):
         try:
             products = Product.objects.filter(company = request.user)
+            
             data = []
             for i in range(len(products)):
                 dict = {}
